@@ -95,18 +95,3 @@ VL53L0X sensor3;
 
 //   delay(1000);  // Eine Sekunde zwischen den Messungen warten
 // }
-
-// put function definitions here:
-
-// #define SENSOR_PIN 34  // Beliebiger ADC-Pin (z. B. GPIO 34)
-
-// void setup() {
-//     Serial.begin(115200);
-// }
-
-// void loop() {
-//     int sensorValue = analogRead(SENSOR_PIN);  
-//     Serial.println(sensorValue);  // Werte ausgeben
-//     delay(10);
-// }
-// ------------------------------------------------------------------------------------------
