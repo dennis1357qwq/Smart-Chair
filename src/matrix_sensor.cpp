@@ -14,7 +14,7 @@ void selectMuxChannel(int channel, const int* muxPins) {
     }
 }
 
-void init_Matrix() {
+void initMatrixSensor() {
     //MUX control pins set to outputs
     for (int i = 0; i < 4; i++) {
         pinMode(rowMuxPins[i], OUTPUT);
@@ -23,6 +23,7 @@ void init_Matrix() {
 }
 
 void update_Matrix() {
+    Serial.println("[");
     for (int col = 0; col < COLS; col++) {
         selectMuxChannel(col, colMuxPins); // pick col to measure
         delayMicroseconds(300);
