@@ -1,15 +1,41 @@
-#include <VL53L0X.h>
+#include "tof_sensor.h"
+#include <Arduino.h>
 
+ToFSensor::ToFSensor(uint8_t xshut, uint8_t address) 
+    : xshutPin(xshut), i2cAddress(address) {}
+
+bool ToFSensor::init() {
+    pinMode(xshutPin, OUTPUT);
+    digitalWrite(xshutPin, LOW);
+    delay(10);
+    digitalWrite(xshutPin, HIGH);
+    delay(10);
+
+    if (!sensor.init()) {
+        Serial.printf("Sensor an Pin %d konnte nicht initialisiert werden.\n", xshutPin);
+        return false;
+    }
+
+    sensor.setAddress(i2cAddress);
+    sensor.setMeasurementTimingBudget(200000);
+    return true;
+}
+
+uint16_t ToFSensor::read() {
+    uint16_t dist = sensor.readRangeSingleMillimeters();
+    if (sensor.timeoutOccurred()) return 0xFFFF;
+    return dist;
+}
+
+// #include <VL53L0X.h>
 // put function declarations here:
-VL53L0X sensor1;
-VL53L0X sensor2;
-VL53L0X sensor3;
+// VL53L0X sensor1;
+// VL53L0X sensor2;
+// VL53L0X sensor3;
 
-#define XSHUT1 16
-#define XSHUT2 17
-#define XSHUT3 18
-
-
+// #define XSHUT1 16
+// #define XSHUT2 17
+// #define XSHUT3 18
 // void setup() {
 //   Serial.begin(115200);
 //   Wire.begin();
@@ -58,9 +84,6 @@ VL53L0X sensor3;
 //   sensor2.setMeasurementTimingBudget(200000);
 //   // sensor3.setMeasurementTimingBudget(200000);
 // }
-
-
-
 
 // void loop() {
 //   // Sensor 1 messen
