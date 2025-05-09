@@ -1,3 +1,5 @@
+.env
+
 # === PlatformIO Build Directories ===
 .pio/
 .pioenvs/
