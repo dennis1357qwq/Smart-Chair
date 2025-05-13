@@ -1,5 +1,4 @@
 #pragma once
-
 #include <VL53L0X.h>
 
 struct ToFSensor {

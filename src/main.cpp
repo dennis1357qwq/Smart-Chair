@@ -2,17 +2,19 @@
 #include <Wire.h>
 #include "adc_manager.h"
 #include "matrix_sensor.h"
+#include "tof_sensor.h"
+#include "tof_manager.h"
+#include <vector>
+
+VL53L0X sensor;
 
 void setup() {
     Serial.begin(115200);
     Wire.begin(21, 22);
-    initADC();
-    initMatrixSensor();
+    delay(100);
+    initToFSensors();
 }
 
 void loop() {
-    update_Matrix();
-    delay(50);
+    updateToFSensors();
 }
-
-
