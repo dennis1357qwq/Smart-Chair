@@ -2,16 +2,16 @@
 #include <Arduino.h>
 
 static std::vector<ToFSensor> tofSensors;
-static const uint8_t NUM_OF_TOF_SENSORS = 5;
-static const uint8_t xshutPins[NUM_OF_TOF_SENSORS] = {4, 15, 23, 13, 32};
-static const uint8_t i2cAddresses[NUM_OF_TOF_SENSORS] = {0x30, 0x31, 0x32, 0x33, 0x34};
+static const uint8_t NUM_OF_TOF_SENSORS = 6;
+static const uint8_t xshutPins[NUM_OF_TOF_SENSORS] = {4, 15, 23, 13, 32, 33};
+static const uint8_t BASE_TOF_ADRESS = 0x30;
 
 void initToFSensors() {
     tofSensors.clear();
 
     for (size_t i = 0; i < NUM_OF_TOF_SENSORS; i++)
     {
-        tofSensors.emplace_back(xshutPins[i], i2cAddresses[i]);
+        tofSensors.emplace_back(xshutPins[i], BASE_TOF_ADRESS+i);
         tofSensors[i].powerDown();
     }
     Serial.println("Alle Sensoren down");
@@ -24,7 +24,7 @@ void initToFSensors() {
         }
     }
 
-    Serial.println("Alle ToF-Sensoren erfolgreich initialisiert.");
+    Serial.println("Initialisierung abgeschlossen.");
 }
 
 void updateToFSensors() {

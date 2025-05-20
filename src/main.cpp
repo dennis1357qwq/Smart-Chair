@@ -17,6 +17,7 @@ void setup() {
 }
 
 void loop() {
+    Serial.println("- - - - - - - - - - - - - -");
     updateToFSensors();
     delay(100);
 }
