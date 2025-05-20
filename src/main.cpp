@@ -10,6 +10,7 @@ VL53L0X sensor;
 
 void setup() {
     Serial.begin(115200);
+    delay(2500);
     Wire.begin(21, 22);
     delay(100);
     initToFSensors();
@@ -17,4 +18,5 @@ void setup() {
 
 void loop() {
     updateToFSensors();
+    delay(100);
 }

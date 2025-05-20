@@ -3,17 +3,23 @@
 
 static std::vector<ToFSensor> tofSensors;
 static const uint8_t NUM_OF_TOF_SENSORS = 5;
-static const uint8_t xshutPins[NUM_OF_TOF_SENSORS] = {4, 15, 23};
-static const uint8_t i2cAddresses[NUM_OF_TOF_SENSORS] = {0x30, 0x31, 0x32};
+static const uint8_t xshutPins[NUM_OF_TOF_SENSORS] = {4, 15, 23, 13, 32};
+static const uint8_t i2cAddresses[NUM_OF_TOF_SENSORS] = {0x30, 0x31, 0x32, 0x33, 0x34};
 
 void initToFSensors() {
     tofSensors.clear();
 
-    for (uint8_t i = 0; i < 1; ++i) {
+    for (size_t i = 0; i < NUM_OF_TOF_SENSORS; i++)
+    {
         tofSensors.emplace_back(xshutPins[i], i2cAddresses[i]);
+        tofSensors[i].powerDown();
+    }
+    Serial.println("Alle Sensoren down");
+    delay(10);
 
+    for (uint8_t i =0; i < NUM_OF_TOF_SENSORS; ++i) {
         if (!tofSensors[i].init()) {
-            Serial.printf("Init fehlgeschlagen für Sensor %zu (Pin %d)\n", i, xshutPins[i]);
+            Serial.printf("Init fehlgeschlagen für Sensor %zu (Pin %d, Adresse %d)\n", i, tofSensors[i].xshutPin, tofSensors[i].i2cAddress);
               // Optional: anhalten bei Init-Fehler
         }
     }
@@ -22,7 +28,7 @@ void initToFSensors() {
 }
 
 void updateToFSensors() {
-    for (size_t i = 0; i < 1; ++i) {
+    for (size_t i = 0; i < NUM_OF_TOF_SENSORS; ++i) {
         uint16_t dist = tofSensors[i].read();
         if (dist == 0xFFFF) {
             Serial.printf("Sensor %d: Timeout oder Fehler\n", i);
