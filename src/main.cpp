@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include "adc_manager.h"
-#include "matrix_sensor.h"
-#include "tof_manager.h"
+#include "adc/adc_manager.h"
+#include "matrix/matrix_sensor.h"
+#include "tof/tof_manager.h"
 #include <vector>
 
 ToFManager tof({4, 15, 23, 13, 32, 33});
