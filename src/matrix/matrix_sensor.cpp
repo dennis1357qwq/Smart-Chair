@@ -1,5 +1,5 @@
 #include "matrix_sensor.h"
-#include "adc_manager.h"
+#include "adc/adc_manager.h"
 #include <Wire.h>
 
 const int rowMuxPins[4] = {26,27,14,12}; //  control Row-MUX

@@ -1,18 +1,22 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include "adc_manager.h"
-#include "matrix_sensor.h"
+#include "adc/adc_manager.h"
+#include "matrix/matrix_sensor.h"
+#include "tof/tof_manager.h"
+#include <vector>
+
+ToFManager tof({4, 15, 23, 13, 32, 33});
 
 void setup() {
     Serial.begin(115200);
+    delay(2500);
     Wire.begin(21, 22);
-    initADC();
-    initMatrixSensor();
+    delay(100);
+    tof.initToFSensors();
 }
 
 void loop() {
-    update_Matrix();
-    delay(50);
+    Serial.println("- - - - - - - - - - - - - -");
+    tof.updateToFSensors();
+    delay(100);
 }
-
-
