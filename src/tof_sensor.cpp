@@ -21,7 +21,7 @@ bool ToFSensor::init() {
 
     sensor.setAddress(i2cAddress);
     sensor.setMeasurementTimingBudget(200000);
-    Serial.printf("✅ Sensor an Pin %d initialisiert (Adresse 0x%X)\n", xshutPin, i2cAddress);
+    Serial.printf("CHECK - Sensor an Pin %d initialisiert (Adresse 0x%X)\n", xshutPin, i2cAddress);
     initialized = true;
     return true;
 }

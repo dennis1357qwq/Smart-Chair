@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include "tof_sensor.h"
 
