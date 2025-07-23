@@ -5,7 +5,7 @@
 #include "tof/tof_manager.h"
 #include <vector>
 
-ToFManager tof({4, 15, 23, 13, 32, 33});
+ToFManager tof({33, 32, 13, 23, 15, 4});
 
 void setup() {
     Serial.begin(115200);
