@@ -1,11 +1,15 @@
+import NavBar from "./components/NavBar";
+import Sidebar from "./components/Sidebar";
+
 function App() {
   return (
     <>
-      <div>
-        <h1 className="text-4xl font-bold text-blue-600">
-          test frontend chair
-        </h1>
-        <p>Visualisierung</p>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex-1 relative">
+          <NavBar />
+          <div className="overflow-y-auto h-[calc(100vh-4rem)]">Content</div>
+        </div>
       </div>
     </>
   );
