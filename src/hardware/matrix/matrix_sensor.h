@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
-#include "mux.h"
-#include "adc/adc_manager.h"
+#include "hardware/mux.h"
+#include "hardware/adc/adc_manager.h"
 
 class Matrix_sensor {
 public:

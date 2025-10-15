@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include "adc/adc_manager.h"
+#include "hardware/adc/adc_manager.h"
 
 
 class Fsr_manager {

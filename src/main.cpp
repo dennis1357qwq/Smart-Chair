@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include "adc/adc_manager.h"
-#include "matrix/matrix_sensor.h"
-#include "tof/tof_manager.h"
+#include "hardware/adc/adc_manager.h"
+#include "hardware/matrix/matrix_sensor.h"
+#include "hardware/tof/tof_manager.h"
 #include <vector>
-#include "mux.h"
+#include "hardware/mux.h"
 
 Adc adc;
 Mux colMux(25,33,32,18); // Multiplexer for measurement. Control pins(s0,s1,s2,s3).

@@ -1,7 +1,7 @@
 #include "matrix_sensor.h"
-#include "adc/adc_manager.h"
+#include "hardware/adc/adc_manager.h"
 #include <Wire.h>
-#include "mux.h"
+#include "hardware/mux.h"
 
 Matrix_sensor::Matrix_sensor(Mux& rowMux, Mux& colMux, int adc_channel, Adc& adc, uint8_t rows, uint8_t cols)
 : rowMux(rowMux), colMux(colMux), adsChannel(adc_channel), adc(adc), ROWS(rows), COLS(cols) {}
