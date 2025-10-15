@@ -1,39 +1,28 @@
 #include "matrix_sensor.h"
 #include "adc/adc_manager.h"
 #include <Wire.h>
+#include "mux.h"
 
-const int rowMuxPins[4] = {26,27,14,12}; //  control Row-MUX
-const int colMuxPins[4] = {19, 18, 5, 17}; // control Col-MUX
-const int colMuxSIG = 0;  // A0 for ADS1115
-const int ROWS = 10;
-const int COLS = 11;
+Matrix_sensor::Matrix_sensor(Mux& rowMux, Mux& colMux, int adc_channel, Adc& adc, uint8_t rows, uint8_t cols)
+: rowMux(rowMux), colMux(colMux), adsChannel(adc_channel), adc(adc), ROWS(rows), COLS(cols) {}
 
-void selectMuxChannel(int channel, const int* muxPins) {
-    for (int i = 0; i < 4; i++) {
-        digitalWrite(muxPins[i], (channel >> i) & 1);
-    }
+void Matrix_sensor::initMatrixSensor(){
+    colMux.begin();
+    rowMux.begin();
 }
 
-void initMatrixSensor() {
-    //MUX control pins set to outputs
-    for (int i = 0; i < 4; i++) {
-        pinMode(rowMuxPins[i], OUTPUT);
-        pinMode(colMuxPins[i], OUTPUT);
-    }
-}
-
-void update_Matrix() {
+void Matrix_sensor::update_Matrix(){
     Serial.println("[");
-    for (int col = 0; col < COLS; col++) {
-        selectMuxChannel(col, colMuxPins); // pick col to measure
-        delayMicroseconds(300);
+    for (int col = 0; col < COLS; col++)
+    {
+        colMux.selectChannel(col);
+        delay(2);
 
         for (int row = 0; row < ROWS; row++) {
-            selectMuxChannel(row, rowMuxPins); // pick row for 3.3V delivery
-            delayMicroseconds(300);
+            rowMux.selectChannel(row);
+            delay(2);
 
-            int value = readADC(colMuxSIG);
-            if (value < 0 || value > 32767) value = -1;
+            int value = adc.readADC(adsChannel);
             Serial.print(value);
             if (row < ROWS - 1) Serial.print(",");
         }
@@ -42,3 +31,64 @@ void update_Matrix() {
     }
     Serial.println("]");
 }
+
+void Matrix_sensor::test_single_cell(uint8_t row, uint8_t col){
+    rowMux.selectChannel(row);
+    delay(2);
+
+    colMux.selectChannel(col);
+    delay(2);
+
+    int value = adc.readADC(adsChannel);
+    Serial.print("row: ");
+    Serial.print(row);
+    Serial.print("; col: ");
+    Serial.print(col);
+    Serial.print(": ");
+        if (value < 0 || value > 32767) {
+            Serial.println("X\t");  // mask = X
+        } else {
+            char buf[8];
+            sprintf(buf, "%4d", value); 
+            Serial.print(buf);
+            Serial.println("\t");
+        }
+}
+
+void Matrix_sensor::update_Matrix_HumanReadable(){
+    Serial.println("=== Druckmatrix ===");
+    Serial.print("Row\\Col\t");
+    for (int col = 0; col < COLS; col++) {
+        Serial.print(col);
+        Serial.print("\t");
+    }
+    Serial.println();
+    Serial.println();
+
+    for (int row = 0; row < ROWS; row++) {
+        Serial.print(row);
+        Serial.print(":\t");
+
+        for (int col = 0; col < COLS; col++) {
+            colMux.selectChannel(col);
+            delay(2);
+
+            rowMux.selectChannel(row);
+            delay(2);
+
+            int value = adc.readADC(adsChannel);
+            if (value < 0 || value > 32767) {
+                Serial.print("X\t");  // mask = X
+            } else {
+                char buf[8];
+                sprintf(buf, "%4d", value); 
+                Serial.print(buf);
+                Serial.print("\t");
+            }
+        }
+        Serial.println();
+    }
+
+    Serial.println("===================");
+}
+
