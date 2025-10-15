@@ -3,21 +3,22 @@
 #include <Arduino.h>
 #include "hardware/mux.h"
 #include "hardware/adc/adc_manager.h"
+#include "core/telemetry.h"
 
-class Matrix_sensor {
+class MatrixSensor {
 public:
-	Matrix_sensor(Mux& rowMux, Mux& colMux, int adsChannel, Adc& adc, uint8_t rows, uint8_t cols);
+	MatrixSensor(Mux& rowMux, Mux& colMux, uint8_t adsChannel, Adc& adc, uint8_t rows, uint8_t cols);
 
 	void initMatrixSensor();
-	void update_Matrix(); // updates and prints Matrix TODO: print will not be needed in future since ESP will deliver Data trough Endpoint not Serial Output
+	void update(Telemetry& t);
 	void test_single_cell(uint8_t row, uint8_t col);
 	void update_Matrix_HumanReadable();
 
 private:
-	Mux& rowMux;
-	Mux& colMux;
-	int adsChannel;
-	Adc& adc;
-	uint8_t ROWS;
-	uint8_t COLS;
+	Mux& _rowMux;
+	Mux& _colMux;
+	Adc& _adc;
+	uint8_t _adsChannel;
+	uint8_t _ROWS;
+	uint8_t _COLS;
 };
