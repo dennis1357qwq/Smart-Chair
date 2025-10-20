@@ -2,42 +2,50 @@
 #include <Wire.h>
 #include "hardware/adc/adc_manager.h"
 #include "hardware/matrix/matrix_sensor.h"
-#include "hardware/tof/tof_manager.h"
 #include <vector>
 #include "hardware/mux.h"
 #include "core/telemetry.h"
 #include "core/telemetry_json.h"
 #include "hardware/fsr/fsr_manager.h"
 #include "core/fsr_data.h"
+#include "hardware/tof/i2c_mux_PCA9548A.h"
+#include "hardware/tof/tof_manager.h"
 
 Telemetry state;
 Adc adc;
 Mux colMux(25,33,32,18); // Multiplexer for measurement. Control pins(s0,s1,s2,s3).
 Mux rowMux(26,27,14,12); // Multiplexer for Voltage delivery. 
+PCA9548A i2cMux_1(0x70);
+// PCA9548A i2cMux_2(0x71);
+ToFManager tofm;
 MatrixSensor matrix(rowMux, colMux, 0, adc, 7, 7);
 FsrManager fsr(adc, 1, 2, 3);
 
-
-// ToFManager tof({33, 32, 13, 23, 15, 4});
-// ToFManager tof({32, 33, 13, 14, 27, 4});
-
 void setup() {
-    Serial.begin(115200);
-    delay(2500);
-    Wire.begin(21, 22);
-    delay(100);
-    adc.initADC(); // hier muss noch geklärt werden wer abhängig von dieser init ist und deshalb mit in den begin muss
-    matrix.initMatrixSensor();
-    // tof.initToFSensors();
+  Serial.begin(115200);
+  delay(300);
+
+  Wire.begin(21, 22);
+  Wire.setClock(50000);
+  delay(50);
+
+  i2cMux_1.disableAll();
+  delay(5);
+  adc.initADC();
+  matrix.initMatrixSensor();
+  tofm.add(ToF(&i2cMux_1, 1, ToFType::L1X, ToFSlot::KNEE, 0));
+  tofm.add(ToF(&i2cMux_1, 0, ToFType::L0X, ToFSlot::BACK, 0));
+//   tofm.add(ToF(&i2cMux_2, 2, ToFType::L0X, ToFSlot::HEAD, 0));
+
+  tofm.init();
 }
 
 void loop() {   
-    // tof.updateToFSensors();
     matrix.update(state);
     fsr.update(state);
+    tofm.update(state);
     state.t_ms = millis();
     print_json(state, Serial);
     Serial.println(); 
-    // update_Matrix_HumanReadable();
     delay(500);
 }
