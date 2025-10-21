@@ -10,7 +10,7 @@ import {
 
 const navigation = [
   { name: "Chair", icon: HomeIcon, route: "/" },
-  { name: "Sessions", icon: ChartBarIcon, route: "/session" },
+  { name: "Sessions", icon: ChartBarIcon, route: "/sessions" },
   { name: "Calibrate", icon: WrenchIcon, route: "/config" },
 ];
 
