@@ -16,7 +16,7 @@ Adc adc;
 Mux colMux(25,33,32,18); // Multiplexer for measurement. Control pins(s0,s1,s2,s3).
 Mux rowMux(26,27,14,12); // Multiplexer for Voltage delivery. 
 PCA9548A i2cMux_1(0x70);
-// PCA9548A i2cMux_2(0x71);
+PCA9548A i2cMux_2(0x71);
 ToFManager tofm;
 MatrixSensor matrix(rowMux, colMux, 0, adc, 7, 7);
 FsrManager fsr(adc, 1, 2, 3);
@@ -31,11 +31,16 @@ void setup() {
 
   i2cMux_1.disableAll();
   delay(5);
+  i2cMux_2.disableAll();
+  delay(5);
   adc.initADC();
   matrix.initMatrixSensor();
+
+  tofm.registerMux(i2cMux_1);
+  tofm.registerMux(i2cMux_2);
   tofm.add(ToF(&i2cMux_1, 1, ToFType::L1X, ToFSlot::KNEE, 0));
   tofm.add(ToF(&i2cMux_1, 0, ToFType::L0X, ToFSlot::BACK, 0));
-//   tofm.add(ToF(&i2cMux_2, 2, ToFType::L0X, ToFSlot::HEAD, 0));
+  tofm.add(ToF(&i2cMux_2, 2, ToFType::L0X, ToFSlot::HEAD, 0));
 
   tofm.init();
 }

@@ -23,7 +23,8 @@ void ToFManager::init() {
 		tof.valid = false;
     	tof.l0 = nullptr;
     	tof.l1 = nullptr;
-    	tof.mux->select(tof.muxCh);
+    	// tof.mux->select(tof.muxCh);
+		selectOnly(tof.mux, tof.muxCh);
 
 		switch (tof.type) {
 			case ToFType::L0X: {
@@ -69,7 +70,8 @@ void ToFManager::update(Telemetry& t) {
 		auto& tof = _tofs[i];
 		if (!tof.valid) continue;
 
-		tof.mux->select(tof.muxCh);
+		// tof.mux->select(tof.muxCh);
+		selectOnly(tof.mux, tof.muxCh);
 		delayMicroseconds(300);
 		int value = -1;
 
@@ -83,13 +85,13 @@ void ToFManager::update(Telemetry& t) {
 			if (tof.l1->dataReady()) {
 			uint16_t mm = tof.l1->read(false); // non-blocking
 			value = (int)mm;
-			// optional tof.l1->clearInterrupt();
 			}
 		} break;
 		}
 
 		writeToTelemetry(tof, t, value);
 	}
+	for (uint8_t i=0; i<_allMuxN; ++i) if (_allMux[i]) _allMux[i]->disableAll();
 }
 
 void ToFManager::writeToTelemetry(const ToF& tof, Telemetry& t, int value) {
@@ -103,4 +105,19 @@ void ToFManager::writeToTelemetry(const ToF& tof, Telemetry& t, int value) {
 		case ToFSlot::BOTTOM:
 		if (tof.idx < TofData::BOTTOM_N) t.tof.bottom[tof.idx] = value; break;
 	}
+}
+
+void ToFManager::registerMux(PCA9548A& m) {
+  if (_allMuxN < 4) _allMux[_allMuxN++] = &m;
+}
+
+void ToFManager::selectOnly(PCA9548A* m, uint8_t ch) {
+  for (uint8_t i=0; i<_allMuxN; ++i) {
+    if (_allMux[i]) _allMux[i]->disableAll();
+  }
+  delayMicroseconds(500);
+  if (m) {
+    m->select(ch);
+    delay(2);
+  }
 }
