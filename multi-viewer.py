@@ -7,6 +7,8 @@ import matplotlib.animation as animation
 import matplotlib.colors as colors
 from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
 
+
+# To Run: python3 multi-viewer.py
 # =========================
 # Konfiguration
 # =========================
@@ -28,9 +30,9 @@ LOW_NOISE_MAX = 7000
 PRESS_MAX     = 23000
 
 # Für RAW-"two_stage"
-MID_LOW      = 10000
-MID_HIGH     = 19000
-MID_FRACTION = 0.70
+MID_LOW      = 4000
+MID_HIGH     = 13000
+MID_FRACTION = 0.80
 
 # Für RAW-"gamma"
 GAMMA = 0.55
@@ -44,7 +46,7 @@ INVALID_INT = -1
 
 # ToF-Layouts
 BACK_SHAPE   = (3, 2)
-BACK_PLACEMENT = {0:(0,0), 1:(0,1), 2:(1,0), 3:(1,1), 4:(2,0), 5:(2,1)}
+BACK_PLACEMENT = {0:(0,0), 1:(2,0), 2:(1,0), 3:(0,1), 4:(2,1), 5:(1,1)}
 HEAD_SHAPE   = (1, 1)
 KNEE_SHAPE   = (1, 2)
 BOTTOM_SHAPE = (1, 2)
