@@ -1,20 +1,20 @@
 #include "baseline_manager.h"
 
-void BaselineManager::start(uint32_t durationMs, bool forMatrix, bool forTof)
-{
-  if (_state == State::RUNNING) return;
+void BaselineManager::start(uint32_t durationMs, bool forMatrix, bool forTof) {
+  if (_state == State::RUNNING)
+    return;
 
-  _state      = State::RUNNING;
-  _startMs    = millis();
+  _state = State::RUNNING;
+  _startMs = millis();
   _durationMs = durationMs;
   _justFinished = false;
 
   _useMatrix = forMatrix;
-  _useToF    = forTof && (_tof != nullptr); // nur wenn ToFPosture existiert
+  _useToF = forTof && (_tof != nullptr); // nur wenn ToFPosture existiert
 
   if (_useMatrix) {
     _matrix.beginBaseline();
-    _hasMatrixBaseline = false;   // wir überschreiben alte Baseline
+    _hasMatrixBaseline = false; // wir überschreiben alte Baseline
   }
   if (_useToF && _tof) {
     _tof->beginBaseline();
@@ -23,7 +23,8 @@ void BaselineManager::start(uint32_t durationMs, bool forMatrix, bool forTof)
 }
 
 void BaselineManager::update() {
-  if (_state != State::RUNNING) return;
+  if (_state != State::RUNNING)
+    return;
 
   // Während der Laufzeit Samples einsammeln
   if (_useMatrix) {

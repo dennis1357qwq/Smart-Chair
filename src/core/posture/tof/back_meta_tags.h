@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 // Meta-Beschreibung der Rückenhaltung, aufgebaut auf ToFTags/BackZoneLevels
-struct BackMeta {
+struct BackMetaTags {
   // grobe Distanz zur Lehne (exklusiv; genau eins sollte true sein)
   bool backNear = false;
   bool backMid = false;
@@ -14,7 +14,7 @@ struct BackMeta {
   bool slouchDeep = false;  // stark zusammengesackt
 
   // „Hohlkreuz“-ähnliches Muster
-  bool lordosisLike = false;
+  bool hyperlordosis = false;
 
   // tief angelehnt, v. a. oberer Rücken an Lehne
   bool reclineHigh = false;
@@ -25,6 +25,7 @@ struct BackMeta {
   bool rightTwist = false;
   bool rightTwistFull = false;
 
-  // Neutral-Übernahme für den Rücken (aus ToFTags.neutral)
+  // Übernahme aus den Raw Tags
   bool backNeutral = false;
+  bool inRange = false;
 };
