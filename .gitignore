@@ -1,6 +1,9 @@
 # Environment files
 .env
 
+# Local secrets
+secrets.h
+
 # PlatformIO
 .pio/
 .pioenvs/

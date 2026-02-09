@@ -1,15 +1,21 @@
 #include "core/fsr_data.h"
 #include "core/posture/baseline/baseline_manager.h"
 #include "core/posture/matrix/matrix_posture.h"
+#include "core/posture/posture_classifier.h"
+#include "core/posture/tof/back_meta.h"
+#include "core/posture/tof/back_meta_tags.h"
 #include "core/posture/tof/tof_posture.h"
 #include "core/telemetry.h"
 #include "core/telemetry_json.h"
+#include "debug_print.h"
 #include "hardware/adc/adc_manager.h"
 #include "hardware/fsr/fsr_manager.h"
 #include "hardware/matrix/matrix_sensor.h"
 #include "hardware/mux.h"
 #include "hardware/tof/i2c_mux_PCA9548A.h"
 #include "hardware/tof/tof_manager.h"
+#include "interface/http_server.h"
+#include "secrets.h"
 #include <Arduino.h>
 #include <Wire.h>
 #include <vector>
@@ -28,6 +34,8 @@ MatrixPosture matrixPosture(state.matrix.values, MatrixData::ROWS,
                             MatrixData::COLS);
 ToFPosture tofPosture(&state.tof);
 BaselineManager baselineMgr(matrixPosture, &tofPosture);
+PostureClassifier classifier;
+HttpServer http(state, baselineMgr);
 
 void setup() {
   Serial.begin(115200);
@@ -58,21 +66,8 @@ void setup() {
   //  tofm.add(ToF(&i2cMux_2, 4, ToFType::L1X, ToFSlot::BOTTOM, 0));
   //  tofm.add(ToF(&i2cMux_2, 5, ToFType::L1X, ToFSlot::BOTTOM, 1));
   tofm.init();
+  http.begin(WIFI_SSID, WIFI_PASS);
 }
-
-// void debugPrintMatrixTags(const MatrixTags& tags) {
-//   Serial.print("[MatrixTags] ");
-//   if (tags.neutral)        Serial.print("neutral ");
-//   if (tags.weightLeft)     Serial.print("left ");
-//   if (tags.weightRight)    Serial.print("right ");
-//   if (tags.weightForward)  Serial.print("forward ");
-//   if (tags.weightBackward) Serial.print("backward ");
-//   if (tags.crossedLegLeft) Serial.print("xLegL ");
-//   if (tags.crossedLegRight)Serial.print("xLegR ");
-//   if (tags.sitOnLegLeft)   Serial.print("sitLegL ");
-//   if (tags.sitOnLegRight)  Serial.print("sitLegR ");
-//   Serial.println();
-// }
 
 void debugPrintToFTags(const ToFTags &t) {
   Serial.print("[ToF] ");
@@ -98,7 +93,7 @@ void debugPrintToFTags(const ToFTags &t) {
   Serial.println(t.upperFarAway);
 
   // Distanz mitte
-  Serial.print(" middleDistance(Contact/Slight/Medium/Far)=");
+  Serial.print(" | middleDistance(Contact/Slight/Medium/Far)=");
   Serial.print(t.contactMiddle);
   Serial.print("/");
   Serial.print(t.middleSlightAway);
@@ -108,7 +103,7 @@ void debugPrintToFTags(const ToFTags &t) {
   Serial.println(t.middleFarAway);
 
   // Distanz unten
-  Serial.print(" lowerDistance(Slight/Medium/Far)=");
+  Serial.print(" |          lowerDistance(Slight/Medium/Far)=");
   Serial.print(t.contactLower);
   Serial.print("/");
   Serial.print(t.lowerSlightAway);
@@ -124,28 +119,65 @@ void debugPrintToFTags(const ToFTags &t) {
   Serial.println(t.torsoBackward);
 
   // Asymmetrien
-  Serial.print(" | upperAsymmetry=");
-  Serial.print(t.upperAsymmetry);
-  Serial.print(" middleAsymmetry=");
-  Serial.print(t.middleAsymmetry);
-  Serial.print(" lowerAsymmetry=");
-  Serial.println(t.lowerAsymmetry);
+  // Serial.print(" | upperAsymmetry=");
+  // Serial.print(t.upperAsymmetry);
+  // Serial.print(" middleAsymmetry=");
+  // Serial.print(t.middleAsymmetry);
+  // Serial.print(" lowerAsymmetry=");
+  // Serial.println(t.lowerAsymmetry);
 
   // Drehrichtung / Twist
-  Serial.print(" | twistUpper(L/R)=");
-  Serial.print(t.upperTwistLeft);
-  Serial.print("/");
-  Serial.print(t.upperTwistRight);
+  // Serial.print(" | twistUpper(L/R)=");
+  // Serial.print(t.upperTwistLeft);
+  // Serial.print("/");
+  // Serial.print(t.upperTwistRight);
 
-  Serial.print(" twistMiddle(L/R)=");
-  Serial.print(t.middleTwistLeft);
-  Serial.print("/");
-  Serial.print(t.middleTwistRight);
+  // Serial.print(" twistMiddle(L/R)=");
+  // Serial.print(t.middleTwistLeft);
+  // Serial.print("/");
+  // Serial.print(t.middleTwistRight);
 
-  Serial.print(" twistLower(L/R)=");
-  Serial.print(t.lowerTwistLeft);
+  // Serial.print(" twistLower(L/R)=");
+  // Serial.print(t.lowerTwistLeft);
+  // Serial.print("/");
+  // Serial.print(t.lowerTwistRight);
+
+  Serial.println();
+}
+
+void debugPrintBackMeta(const BackMetaTags &m) {
+  Serial.print("[BackMeta] ");
+  Serial.print("inRange=");
+  Serial.print(m.inRange);
+  Serial.print(" neutral=");
+  Serial.print(m.backNeutral);
+
+  Serial.print(" | dist(N/M/F)=");
+  Serial.print(m.backNear);
   Serial.print("/");
-  Serial.print(t.lowerTwistRight);
+  Serial.print(m.backMid);
+  Serial.print("/");
+  Serial.print(m.backFar);
+
+  Serial.print(" | slouch(T/S)=");
+  Serial.print(m.slouchTorso);
+  Serial.print("/");
+  Serial.print(m.slouchShoulder);
+
+  Serial.print(" | hyper=");
+  Serial.print(m.hyperlordosis);
+
+  Serial.print(" reclineHigh=");
+  Serial.print(m.reclineHigh);
+
+  // Serial.print(" | twist(L/LF/R/RF)=");
+  // Serial.print(m.leftTwist);
+  // Serial.print("/");
+  // Serial.print(m.leftTwistFull);
+  // Serial.print("/");
+  // Serial.print(m.rightTwist);
+  // Serial.print("/");
+  // Serial.print(m.rightTwistFull);
 
   Serial.println();
 }
@@ -178,7 +210,6 @@ void loop() {
     }
     Serial.println("]");
 
-    // NEU: ToF-Baseline dumpen (falls vorhanden)
     ToFPosture *tp = baselineMgr.tofPosture();
     if (tp && baselineMgr.hasTofBaseline()) {
       const float *backBase = tp->getBackBaseline();
@@ -233,41 +264,34 @@ void loop() {
       Serial.println(baselineMgr.remainingMs());
     }
   } else {
-    // print_json(state, Serial);
-    // Serial.println();
+
+    MatrixTags tagsNew = matrixPosture.computeTagsBaseline();
+
+    Serial.println();
+    Serial.print("NEW: occ=");
+    Serial.print(tagsNew.occupied);
+    Serial.print(" L=");
+    Serial.print(tagsNew.weightLeft);
+    Serial.print(" R=");
+    Serial.print(tagsNew.weightRight);
+    Serial.print(" F=");
+    Serial.print(tagsNew.weightForward);
+    Serial.print(" B=");
+    Serial.print(tagsNew.weightBackward);
+    Serial.print(" N=");
+    Serial.println(tagsNew.neutral);
+
+    ToFTags ttags = tofPosture.computeTags();
+    BackMetaTags meta = computeBackMeta(ttags);
+    PosId pid = classifier.classify(tagsNew, meta);
+    state.posId = pid;
+
+    Debug::print(tagsNew, ttags, meta, pid);
+    debugPrintToFTags(ttags);
+    debugPrintBackMeta(meta);
+
+    Serial.println("------");
+    delay(500);
   }
-  // MatrixTags tagsOld = matrixPosture.computeTags();
-  MatrixTags tagsNew = matrixPosture.computeTagsBaseline();
-
-  // Serial.print("OLD: occ=");
-  // Serial.print(tagsOld.occupied);
-  // Serial.print(" L=");
-  // Serial.print(tagsOld.weightLeft);
-  // Serial.print(" R=");
-  // Serial.print(tagsOld.weightRight);
-  // Serial.print(" F=");
-  // Serial.print(tagsOld.weightForward);
-  // Serial.print(" B=");
-  // Serial.print(tagsOld.weightBackward);
-  // Serial.print(" N=");
-  // Serial.print(tagsOld.neutral);
-  Serial.println();
-  Serial.print("NEW: occ=");
-  Serial.print(tagsNew.occupied);
-  Serial.print(" L=");
-  Serial.print(tagsNew.weightLeft);
-  Serial.print(" R=");
-  Serial.print(tagsNew.weightRight);
-  Serial.print(" F=");
-  Serial.print(tagsNew.weightForward);
-  Serial.print(" B=");
-  Serial.print(tagsNew.weightBackward);
-  Serial.print(" N=");
-  Serial.println(tagsNew.neutral);
-
-  ToFTags ttags = tofPosture.computeTags();
-  debugPrintToFTags(ttags);
-
-  Serial.println("------");
-  delay(500);
+  http.update();
 }

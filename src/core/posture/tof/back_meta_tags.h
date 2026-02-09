@@ -9,9 +9,11 @@ struct BackMetaTags {
   bool backFar = false;
 
   // Slouch-Typen
-  bool slouchUpper = false; // Schultern / oberer Rücken nach vorne
-  bool slouchMid = false;   // C-Slouch, Mitte rund
-  bool slouchDeep = false;  // stark zusammengesackt
+  // bool slouchUpper = false;    // Schultern / oberer Rücken nach vorne
+  // bool slouchMid = false;      // C-Slouch, Mitte rund
+  // bool slouchDeep = false;     // stark zusammengesackt
+  bool slouchShoulder = false; // “upper > middle”
+  bool slouchTorso = false;    // "middle > lower"
 
   // „Hohlkreuz“-ähnliches Muster
   bool hyperlordosis = false;

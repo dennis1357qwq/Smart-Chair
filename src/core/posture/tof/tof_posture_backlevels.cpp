@@ -9,12 +9,12 @@ DistanceLevel ToFPosture::mapDeltaToLevel(float d, BackRow row) const {
   static constexpr float UPPER_SLIGHT_MAX = 60.0f;
   static constexpr float UPPER_MEDIUM_MAX = 120.0f;
 
-  static constexpr float MIDDLE_CONTACT_EPS = 20.0f;
+  static constexpr float MIDDLE_CONTACT_EPS = 15.0f;
   static constexpr float MIDDLE_SLIGHT_MAX = 60.0f;
   static constexpr float MIDDLE_MEDIUM_MAX = 120.0f;
 
-  static constexpr float LOWER_CONTACT_EPS = 30.0f;
-  static constexpr float LOWER_SLIGHT_MAX = 70.0f;
+  static constexpr float LOWER_CONTACT_EPS = 60.0f;
+  static constexpr float LOWER_SLIGHT_MAX = 90.0f;
   static constexpr float LOWER_MEDIUM_MAX = 130.0f;
 
   float contactEps = 20.0f;
@@ -97,6 +97,10 @@ BackZoneLevels ToFPosture::computeBackLevels() const {
   if (!_hasBaseline || !_tof)
     return lvl;
 
+  static constexpr float OFFSET_UPPER_MM = -5.0f;
+  static constexpr float OFFSET_MIDDLE_MM = -15.0f;
+  static constexpr float OFFSET_LOWER_MM = 0.0f;
+
   auto computeRow = [&](uint8_t idxLeft, uint8_t idxRight, BackRow row,
                         DistanceLevel &distLvl, AsymLevel &asymLvl,
                         bool &twistLeft, bool &twistRight) {
@@ -125,7 +129,24 @@ BackZoneLevels ToFPosture::computeBackLevels() const {
       mean = dR;
     }
 
-    distLvl = mapDeltaToLevel(mean, row);
+    float offset = 0.f;
+    switch (row) {
+    case BackRow::Upper:
+      offset = OFFSET_UPPER_MM;
+      break;
+    case BackRow::Middle:
+      offset = OFFSET_MIDDLE_MM;
+      break;
+    case BackRow::Lower:
+      offset = OFFSET_LOWER_MM;
+      break;
+    }
+
+    float meanCorr = mean + offset;
+
+    distLvl = mapDeltaToLevel(meanCorr, row);
+
+    // distLvl = mapDeltaToLevel(mean, row);
 
     if (hasL && hasR) {
       float diff = dL - dR;

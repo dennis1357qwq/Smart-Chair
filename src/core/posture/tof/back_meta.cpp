@@ -5,6 +5,18 @@ static bool anyAway(bool slight, bool medium, bool far) {
   return slight || medium || far;
 }
 
+static int zoneLevel(bool contact, bool slight, bool medium, bool far) {
+  if (contact)
+    return 0;
+  if (slight)
+    return 1;
+  if (medium)
+    return 2;
+  if (far)
+    return 3;
+  return -1; // unknown
+}
+
 BackMetaTags computeBackMeta(const ToFTags &t) {
   BackMetaTags m;
 
@@ -27,20 +39,35 @@ BackMetaTags computeBackMeta(const ToFTags &t) {
 
   // ---- 3) Slouches ----
   // Upper slouch
-  if ((t.upperMediumAway || t.upperFarAway) &&
-      (t.contactMiddle || t.middleSlightAway)) {
-    m.slouchUpper = true;
+  // if ((t.upperMediumAway || t.upperFarAway) &&
+  //     (t.contactMiddle || t.middleSlightAway)) {
+  //   m.slouchUpper = true;
+  // }
+
+  // // Mid slouch
+  // if (t.middleMediumAway || t.middleFarAway) {
+  //   m.slouchMid = true;
+  // }
+
+  // // Deep slouch
+  // if ((t.lowerMediumAway || t.lowerFarAway) &&
+  //     (t.middleMediumAway || t.middleFarAway)) {
+  //   m.slouchDeep = true;
+  // }
+
+  int up = zoneLevel(t.contactUpper, t.upperSlightAway, t.upperMediumAway,
+                     t.upperFarAway);
+  int mi = zoneLevel(t.contactMiddle, t.middleSlightAway, t.middleMediumAway,
+                     t.middleFarAway);
+  int lo = zoneLevel(t.contactLower, t.lowerSlightAway, t.lowerMediumAway,
+                     t.lowerFarAway);
+
+  if ((up >= 0) && (mi >= 0) && (up > mi)) {
+    m.slouchShoulder = true;
   }
 
-  // Mid slouch
-  if (t.middleMediumAway || t.middleFarAway) {
-    m.slouchMid = true;
-  }
-
-  // Deep slouch
-  if ((t.lowerMediumAway || t.lowerFarAway) &&
-      (t.middleMediumAway || t.middleFarAway)) {
-    m.slouchDeep = true;
+  if (mi >= 0 && lo >= 0 && mi > lo) {
+    m.slouchTorso = true;
   }
 
   // ---- 4) Hyperlordosis ----
