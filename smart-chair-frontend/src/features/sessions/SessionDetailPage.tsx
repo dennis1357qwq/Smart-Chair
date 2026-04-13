@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getSessionById, type Session } from "./session";
-import { useTimer } from "./TimerContext";
+import { getSessionById, type Session } from "./session.ts";
+import { useTimer } from "./TimerContext.tsx";
 
 function formatMMSS(totalSec: number) {
   const m = Math.floor(totalSec / 60);
@@ -14,7 +14,6 @@ export default function SessionDetailPage() {
   const nav = useNavigate();
   const loc = useLocation() as { state?: { session?: Session } };
 
-  // Session finden (Pref: Router state → Fallback: Lookup per ID)
   const session = useMemo<Session | undefined>(() => {
     if (loc.state?.session) return loc.state.session;
     if (id) return getSessionById(id);
@@ -42,27 +41,20 @@ export default function SessionDetailPage() {
     );
   }
 
-  // ---- Globaler Timer ----
   const { state: timer, start, pause, resume, reset } = useTimer();
-
-  // Ist der *globale* Timer gerade für *diese* Session aktiv?
   const isThisSessionActive = timer.active && timer.session?.id === session.id;
   const isRunning = isThisSessionActive && timer.running;
 
-  // Anzeige-Dauer/Rest:
   const fallbackTotalSec = session.durationMin * 60;
   const totalSec = isThisSessionActive ? timer.totalSec : fallbackTotalSec;
   const remaining = isThisSessionActive ? timer.remainingSec : fallbackTotalSec;
   const progress = totalSec > 0 ? 1 - remaining / totalSec : 0;
 
-  // Controls
   const handleStartPause = () => {
     if (!isThisSessionActive) {
-      // startet den *globalen* Timer für diese Session
       start(session);
       return;
     }
-    // toggeln
     isRunning ? pause() : resume();
   };
 
@@ -70,14 +62,11 @@ export default function SessionDetailPage() {
     if (isThisSessionActive) {
       reset();
     } else {
-      // Falls nicht aktiv: frisch starten und sofort pausieren? (optional)
-      // start(session); pause();
     }
   };
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] p-6 overflow-hidden">
-      {/* Blurry Background */}
       <div
         className={`pointer-events-none absolute inset-0 ${
           session.color ?? "bg-slate-700"
@@ -88,8 +77,6 @@ export default function SessionDetailPage() {
           {session.emoji ?? "🕒"}
         </div>
       </div>
-
-      {/* Content */}
       <div className="relative">
         <button
           onClick={() => nav(-1)}
@@ -110,8 +97,6 @@ export default function SessionDetailPage() {
                 : "Your custom session."}
             </p>
           </header>
-
-          {/* Timer Card */}
           <div className="rounded-2xl bg-white/80 backdrop-blur shadow p-6">
             <div className="flex items-center justify-between">
               <div className="text-6xl font-semibold tabular-nums tracking-tight">
@@ -124,8 +109,6 @@ export default function SessionDetailPage() {
                 </span>
               </div>
             </div>
-
-            {/* Progress */}
             <div className="mt-6">
               <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
                 <div
@@ -139,8 +122,6 @@ export default function SessionDetailPage() {
                 {Math.round(progress * 100)}% complete
               </div>
             </div>
-
-            {/* Controls */}
             <div className="mt-6 flex gap-3">
               <button
                 onClick={handleStartPause}
@@ -164,8 +145,6 @@ export default function SessionDetailPage() {
               </button>
             </div>
           </div>
-
-          {/* Optional: Beschreibung / Tipps */}
           <section className="prose max-w-2xl">
             <h2>About this session</h2>
             <p>

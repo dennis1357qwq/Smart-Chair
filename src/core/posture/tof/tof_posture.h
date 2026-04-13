@@ -23,7 +23,7 @@ enum class BackRow : uint8_t { Upper, Middle, Lower };
 struct BackZoneLevels {
   bool valid = false; // ob überhaupt sinnvoll berechnet
 
-  // 3 vertikale Zonen (Annahme: 6 Rückensensoren = 2x3 Matrix)
+  // 3 vertikale Zonen
   DistanceLevel upper = DistanceLevel::Unknown;
   DistanceLevel middle = DistanceLevel::Unknown;
   DistanceLevel lower = DistanceLevel::Unknown;
@@ -57,7 +57,7 @@ struct ToFTags {
   // Kontakt zur Lehne
   bool contact = false; // irgendeine Zone in Kontakt
   bool contactUpper = false;
-  bool contactMiddle = false; // <--- NEU
+  bool contactMiddle = false;
   bool contactLower = false;
 
   // Distanzkategorien (nur Rücken, vertikal)
@@ -65,9 +65,9 @@ struct ToFTags {
   bool upperMediumAway = false;
   bool upperFarAway = false;
 
-  bool middleSlightAway = false; // <--- NEU
-  bool middleMediumAway = false; // <--- NEU
-  bool middleFarAway = false;    // <--- NEU
+  bool middleSlightAway = false;
+  bool middleMediumAway = false;
+  bool middleFarAway = false;
 
   bool lowerSlightAway = false;
   bool lowerMediumAway = false;

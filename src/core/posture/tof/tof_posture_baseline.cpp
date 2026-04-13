@@ -4,7 +4,6 @@ void ToFPosture::beginBaseline() {
   _frames = 0;
   _hasBaseline = false;
 
-  // alles resetten
   for (uint8_t i = 0; i < TofData::BACK_N; ++i) {
     _backBaseline[i] = 0.f;
     _backCount[i] = 0;

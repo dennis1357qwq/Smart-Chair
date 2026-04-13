@@ -291,7 +291,7 @@ void loop() {
     debugPrintBackMeta(meta);
 
     Serial.println("------");
-    delay(500);
+    // delay(500);
   }
   http.update();
 }

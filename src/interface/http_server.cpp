@@ -1,7 +1,13 @@
 #include "http_server.h"
 
-#include "core/telemetry_json.h" // für print_json(state, Print&)
+#include "core/telemetry_json.h"
 #include <StreamString.h>
+
+static void addCorsHeaders(WebServer &server) {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+}
 
 HttpServer::HttpServer(Telemetry &state, BaselineManager &baselineMgr)
     : _state(state), _baselineMgr(baselineMgr), _server(80) {}
@@ -19,12 +25,26 @@ void HttpServer::begin(const char *ssid, const char *pass) {
   Serial.print("[WiFi] IP: ");
   Serial.println(WiFi.localIP());
 
-  _server.on("/", HTTP_GET, [this]() { handleRoot(); });
-  _server.on("/telemetry", HTTP_GET, [this]() { handleTelemetry(); });
-  _server.on("/baseline/start", HTTP_GET, [this]() { handleBaselineStart(); });
-  _server.on("/baseline/start", HTTP_POST, [this]() { handleBaselineStart(); });
-  _server.on("/baseline/status", HTTP_GET,
-             [this]() { handleBaselineStatus(); });
+  _server.on("/", HTTP_GET, [this]() {
+    addCorsHeaders(_server);
+    handleRoot();
+  });
+  _server.on("/telemetry", HTTP_GET, [this]() {
+    addCorsHeaders(_server);
+    handleTelemetry();
+  });
+  _server.on("/baseline/start", HTTP_GET, [this]() {
+    addCorsHeaders(_server);
+    handleBaselineStart();
+  });
+  _server.on("/baseline/start", HTTP_POST, [this]() {
+    addCorsHeaders(_server);
+    handleBaselineStart();
+  });
+  _server.on("/baseline/status", HTTP_GET, [this]() {
+    addCorsHeaders(_server);
+    handleBaselineStatus();
+  });
 
   _server.begin();
   _ready = true;
@@ -47,8 +67,8 @@ int HttpServer::getIntArg(const char *name, int fallback) {
 
 void HttpServer::handleTelemetry() {
   StreamString ss;
-  ss.reserve(4096);       // bei Bedarf erhöhen
-  print_json(_state, ss); // nutzt deine vorhandene JSON-Funktion
+  ss.reserve(4096);
+  print_json(_state, ss);
 
   _server.send(200, "application/json", ss);
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 
-// Welche Zonen gibt es?
 enum class MatrixZoneId : uint8_t {
   LeftHalf,
   RightHalf,
@@ -17,8 +16,8 @@ enum class MatrixZoneId : uint8_t {
 // Eine Zone = Menge von Indizes in der Matrix
 struct MatrixZone {
   MatrixZoneId id;
-  uint8_t indices[49];  // max. 7x7 = 49 Zellen
-  uint8_t count = 0;    // wie viele sind wirklich belegt
+  uint8_t indices[49]; // max. 7x7 = 49 Zellen
+  uint8_t count = 0;   // wie viele sind wirklich belegt
 };
 
 class MatrixZones {
@@ -27,7 +26,7 @@ public:
 
   MatrixZones(uint8_t rows, uint8_t cols);
 
-  const MatrixZone& zone(MatrixZoneId id) const;
+  const MatrixZone &zone(MatrixZoneId id) const;
   uint8_t zoneCount() const { return _zoneCount; }
 
 private:

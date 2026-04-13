@@ -17,7 +17,7 @@ enum class PosId : int32_t {
 
   NEUTRAL_NO_BACKREST = 8, // Neutral Matrix, No contact Back, No Slouched Back
 
-  LEAN_BACK = 9,             // Back Matrix + Contact Back + No slouch
+  LEAN_BACK = 9,             // Back Matrix + Contact Back
   SLOUCH_UPPER_NEUTRAL = 10, // Matrix Neutral or Forward + Shoulder Slouch Back
   SLOUCH_LOWER_NEUTRAL =
       11, // Matrix Neutral or Forward + Shoulder Slouch + Torso Slouch Back
