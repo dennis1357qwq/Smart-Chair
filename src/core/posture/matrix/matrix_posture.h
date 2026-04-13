@@ -13,7 +13,7 @@ struct MatrixTags {
   // Advanced tags
   bool crossedLegLeft = false, crossedLegRight = false;
   bool sitOnLegLeft = false, sitOnLegRight = false;
-  bool sittingFront = false; // sitting on the front part of the chair
+  bool sittingFront = false;
 };
 
 class MatrixPosture {

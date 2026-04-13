@@ -10,11 +10,11 @@ void BaselineManager::start(uint32_t durationMs, bool forMatrix, bool forTof) {
   _justFinished = false;
 
   _useMatrix = forMatrix;
-  _useToF = forTof && (_tof != nullptr); // nur wenn ToFPosture existiert
+  _useToF = forTof && (_tof != nullptr);
 
   if (_useMatrix) {
     _matrix.beginBaseline();
-    _hasMatrixBaseline = false; // wir überschreiben alte Baseline
+    _hasMatrixBaseline = false;
   }
   if (_useToF && _tof) {
     _tof->beginBaseline();
@@ -26,7 +26,6 @@ void BaselineManager::update() {
   if (_state != State::RUNNING)
     return;
 
-  // Während der Laufzeit Samples einsammeln
   if (_useMatrix) {
     _matrix.feedBaselineSample();
   }
@@ -34,7 +33,6 @@ void BaselineManager::update() {
     _tof->feedBaselineSample();
   }
 
-  // Zeit abgelaufen?
   if (millis() - _startMs >= _durationMs) {
     if (_useMatrix) {
       _matrix.finalizeBaseline();

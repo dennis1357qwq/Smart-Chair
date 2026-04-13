@@ -45,7 +45,6 @@ float MatrixPosture::baselineZoneSum(MatrixZoneId id) const {
   float sum = 0.f;
   for (uint8_t i = 0; i < z.count; ++i) {
     uint8_t idx = z.indices[i];
-    // hier explizit die Baseline nehmen, NICHT _matrix
     sum += _baseline[idx];
   }
   return sum;
@@ -71,8 +70,7 @@ float MatrixPosture::zoneDeltaSum(MatrixZoneId id) const {
   if (!_hasBaseline || !_matrix)
     return 0.f;
 
-  static constexpr float CELL_EPS =
-      15.0f; // unter ~15 ADC-Punkte: als Rauschen ignorieren
+  static constexpr float CELL_EPS = 15.0f;
 
   float sum = 0.f;
   for (uint8_t i = 0; i < z.count; ++i) {

@@ -13,11 +13,11 @@ enum class MatrixZoneId : uint8_t {
   BackRight
 };
 
-// Eine Zone = Menge von Indizes in der Matrix
+// Zone = Amount of Indices in the Matrix
 struct MatrixZone {
   MatrixZoneId id;
-  uint8_t indices[49]; // max. 7x7 = 49 Zellen
-  uint8_t count = 0;   // wie viele sind wirklich belegt
+  uint8_t indices[49]; // 7 x 7 cells
+  uint8_t count = 0;
 };
 
 class MatrixZones {

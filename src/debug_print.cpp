@@ -106,9 +106,6 @@ void print(const MatrixTags &m, const ToFTags &t, const BackMetaTags &b,
            PosId id) {
   print(m);
   print(b);
-  // wenn du ToF raw tags nur manchmal willst: einfach hier NICHT drucken,
-  // oder eine compile-time flag einbauen
-  // print(t);
   print(id);
 }
 

@@ -9,14 +9,14 @@
 
 namespace Debug {
 
-// Einzelprinter (Overloads)
+// single print (Overloads)
 void print(const MatrixTags &m);
 void print(const ToFTags &t);
 void print(const BackMetaTags &b);
 void print(PosId id);
 void print(const Telemetry &s);
 
-// Convenience: alles auf einmal (optional)
+// convenience print - all at once
 void print(const MatrixTags &m, const ToFTags &t, const BackMetaTags &b,
            PosId id);
 

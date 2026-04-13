@@ -48,7 +48,7 @@ private:
   uint8_t _l0xN = 0;
   VL53L1X _l1xPool[MAX_L1X];
   uint8_t _l1xN = 0;
-  PCA9548A *_allMux[4] = {nullptr}; // bis zu 4 MUXe, bei Bedarf erhöhen
+  PCA9548A *_allMux[4] = {nullptr}; // up to 4 mux
   uint8_t _allMuxN = 0;
 
   void writeToTelemetry(const ToF &tof, Telemetry &t, int value);

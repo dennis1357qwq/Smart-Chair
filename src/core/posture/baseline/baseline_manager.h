@@ -1,6 +1,6 @@
 #pragma once
 #include "core/posture/matrix/matrix_posture.h"
-#include "core/posture/tof/tof_posture.h" // Pfad ggf. anpassen
+#include "core/posture/tof/tof_posture.h"
 #include <Arduino.h>
 
 class BaselineManager {
@@ -9,15 +9,10 @@ public:
 
   State state() const { return _state; }
 
-  // ToF ist optional: du kannst den zweiten Parameter auch später via attachToF
-  // setzen.
   BaselineManager(MatrixPosture &matrix, ToFPosture *tof = nullptr)
       : _matrix(matrix), _tof(tof) {}
 
-  // Falls du ToF erst nachträglich anhängen willst
   void attachToF(ToFPosture &tof) { _tof = &tof; }
-
-  // Startet eine neue Baseline-Phase
   void start(uint32_t durationMs, bool forMatrix, bool forTof);
 
   void update();
@@ -33,8 +28,6 @@ public:
 
   bool hasMatrixBaseline() const { return _hasMatrixBaseline; }
   bool hasTofBaseline() const { return _hasTofBaseline; }
-
-  // „Rising edge“: genau einmal true direkt nach Abschluss
   bool baselineJustFinished();
 
   MatrixPosture &matrixPosture() { return _matrix; }

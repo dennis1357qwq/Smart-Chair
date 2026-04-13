@@ -12,7 +12,7 @@ public:
   HttpServer(Telemetry &state, BaselineManager &baselineMgr);
 
   void begin(const char *ssid, const char *pass);
-  void update(); // im loop aufrufen
+  void update();
 
   bool isReady() const { return _ready; }
 
