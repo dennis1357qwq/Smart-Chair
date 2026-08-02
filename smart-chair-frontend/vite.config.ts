@@ -9,13 +9,13 @@ import {
   mockBaselineStatus,
 } from "./src/dev/mockChair";
 
-function sendJson(res: ServerResponse, status: number, obj: any) {
+function sendJson(res: ServerResponse, status: number, body: unknown) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.end(JSON.stringify(obj));
+  res.end(JSON.stringify(body));
 }
 
 export default defineConfig({

@@ -67,7 +67,14 @@ export default function Sidebar() {
   );
 }
 
-function SidebarItem({ name, icon: Icon, route, collapsed }: any) {
+type SidebarItemProps = {
+  name: string;
+  icon: typeof HomeIcon;
+  route: string;
+  collapsed: boolean;
+};
+
+function SidebarItem({ name, icon: Icon, route, collapsed }: SidebarItemProps) {
   return (
     <a
       href={route}

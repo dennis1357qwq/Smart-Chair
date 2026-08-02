@@ -1,6 +1,4 @@
 import React, {
-  createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -8,27 +6,7 @@ import React, {
 import type { Session } from "./session.ts";
 import { getSessionById } from "./session.ts";
 import { saveTimerToStorage, loadTimerFromStorage } from "./timer.storage.ts";
-
-type TimerState = {
-  active: boolean;
-  running: boolean;
-  session: Session | null;
-  totalSec: number;
-  remainingSec: number;
-  showMini: boolean;
-};
-
-type TimerAPI = {
-  state: TimerState;
-  start: (session: Session) => void;
-  pause: () => void;
-  resume: () => void;
-  reset: () => void;
-  hideMini: () => void;
-  showMini: () => void;
-};
-
-const TimerContext = createContext<TimerAPI | null>(null);
+import { TimerContext, type TimerState } from "./timer-context.ts";
 
 export const TimerProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -186,9 +164,3 @@ export const TimerProvider: React.FC<{ children: React.ReactNode }> = ({
     </TimerContext.Provider>
   );
 };
-
-export function useTimer() {
-  const ctx = useContext(TimerContext);
-  if (!ctx) throw new Error("useTimer must be used within TimerProvider");
-  return ctx;
-}

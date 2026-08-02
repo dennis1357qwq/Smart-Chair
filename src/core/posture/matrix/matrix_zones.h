@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+#include <stdint.h>
 
 enum class MatrixZoneId : uint8_t {
   LeftHalf,

@@ -14,8 +14,9 @@ export default function SettingsPage() {
       await startBaseline();
       setToast("Baseline started.");
       window.setTimeout(() => setToast(null), 1500);
-    } catch (e: any) {
-      setToast(`Baseline failed: ${e?.message ?? "unknown error"}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "unknown error";
+      setToast(`Baseline failed: ${message}`);
       window.setTimeout(() => setToast(null), 2500);
     } finally {
       setBusy(false);

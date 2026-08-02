@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useChair } from "../core/state/ChairContext";
+import { useChair } from "../core/state/useChair";
 import { usePostureFeedback } from "../core/feedback/usePostureFeedback";
 
 type Props = {
@@ -11,7 +11,7 @@ export default function PosturePanel({
   variant = "compact",
   showOpenChairButton = true,
 }: Props) {
-  const { status, telemetry, error, lastUpdatedMs } = useChair() as any;
+  const { status, telemetry, error, lastUpdatedMs } = useChair();
   const fb = usePostureFeedback();
   const nav = useNavigate();
 

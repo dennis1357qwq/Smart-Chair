@@ -1,5 +1,4 @@
 #include "matrix_posture.h"
-#include <Arduino.h>
 
 MatrixPosture::MatrixPosture(const int16_t *matrixPtr, uint8_t rows,
                              uint8_t cols)

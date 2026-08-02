@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getSessionById, type Session } from "./session.ts";
-import { useTimer } from "./TimerContext.tsx";
+import { useTimer } from "./useTimer.ts";
 
 function formatMMSS(totalSec: number) {
   const m = Math.floor(totalSec / 60);
@@ -13,6 +13,7 @@ export default function SessionDetailPage() {
   const { id } = useParams();
   const nav = useNavigate();
   const loc = useLocation() as { state?: { session?: Session } };
+  const { state: timer, start, pause, resume, reset } = useTimer();
 
   const session = useMemo<Session | undefined>(() => {
     if (loc.state?.session) return loc.state.session;
@@ -41,7 +42,6 @@ export default function SessionDetailPage() {
     );
   }
 
-  const { state: timer, start, pause, resume, reset } = useTimer();
   const isThisSessionActive = timer.active && timer.session?.id === session.id;
   const isRunning = isThisSessionActive && timer.running;
 
@@ -55,14 +55,15 @@ export default function SessionDetailPage() {
       start(session);
       return;
     }
-    isRunning ? pause() : resume();
+    if (isRunning) {
+      pause();
+    } else {
+      resume();
+    }
   };
 
   const handleReset = () => {
-    if (isThisSessionActive) {
-      reset();
-    } else {
-    }
+    if (isThisSessionActive) reset();
   };
 
   return (

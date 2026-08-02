@@ -19,11 +19,13 @@ export function useChairConnection() {
         setOnline(true);
         setBaseline(s);
         setLastError(null);
-      } catch (e: any) {
+      } catch (error: unknown) {
         if (!alive) return;
         setOnline(false);
         setBaseline(null);
-        setLastError(e?.message ?? "connection error");
+        setLastError(
+          error instanceof Error ? error.message : "connection error",
+        );
       }
     }
 

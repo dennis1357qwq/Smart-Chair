@@ -1,4 +1,5 @@
 #include "tof_posture.h"
+#include <cmath>
 
 // --- Helper: Delta → DistanceLevel ---
 // Annahme: Baseline ≈ "empfohlene neutral/angelehnte Haltung".
@@ -58,7 +59,7 @@ DistanceLevel ToFPosture::mapDeltaToLevel(float d, BackRow row) const {
 // diff = dLeft - dRight; >0: linke Seite weiter weg
 
 AsymLevel ToFPosture::classifyAsym(float diff) const {
-  float ad = fabs(diff);
+  float ad = std::fabs(diff);
   constexpr float ASYM_MILD = 15.0f;
   constexpr float ASYM_STRONG = 40.0f;
 

@@ -1,5 +1,7 @@
 # Environment files
 .env
+.env.development
+.env.*.local
 
 # Local secrets
 secrets.h
@@ -36,6 +38,7 @@ node_modules/
 *.local
 
 # Python
+.venv/
 __pycache__/
 *.pyc
 *.pyo

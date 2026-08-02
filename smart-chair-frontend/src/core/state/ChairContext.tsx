@@ -1,6 +1,4 @@
 import React, {
-  createContext,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -8,27 +6,11 @@ import React, {
 } from "react";
 import type { Telemetry } from "../../shared/types/telemetry";
 import { fetchTelemetry } from "../api/chairApi";
-
-type ChairStatus = "idle" | "connecting" | "online" | "error";
-
-type ChairState = {
-  status: ChairStatus;
-  telemetry: Telemetry | null;
-  lastUpdatedMs: number | null;
-  error: string | null;
-};
-
-type ChairContextValue = ChairState & {
-  refreshNow: () => void;
-};
-
-const ChairContext = createContext<ChairContextValue | null>(null);
-
-export function useChair(): ChairContextValue {
-  const ctx = useContext(ChairContext);
-  if (!ctx) throw new Error("useChair must be used inside <ChairProvider>.");
-  return ctx;
-}
+import {
+  ChairContext,
+  type ChairContextValue,
+  type ChairStatus,
+} from "./chair-context";
 
 type Props = {
   children: React.ReactNode;
@@ -67,20 +49,20 @@ export function ChairProvider({ children, pollIntervalMs = 800 }: Props) {
         setLastUpdatedMs(Date.now());
         setError(null);
         setStatus("online");
-      } catch (e: any) {
+      } catch (error: unknown) {
         if (cancelled) return;
-        if (e?.name === "AbortError") return;
+        if (error instanceof DOMException && error.name === "AbortError") return;
 
         setStatus("error");
-        setError(e?.message ?? String(e));
+        setError(error instanceof Error ? error.message : String(error));
       } finally {
-        if (cancelled) return;
+        if (!cancelled) {
+          const immediate = refreshRequestedRef.current;
+          refreshRequestedRef.current = false;
 
-        const immediate = refreshRequestedRef.current;
-        refreshRequestedRef.current = false;
-
-        const delay = immediate ? 50 : pollIntervalMs;
-        timer = window.setTimeout(loop, delay);
+          const delay = immediate ? 50 : pollIntervalMs;
+          timer = window.setTimeout(loop, delay);
+        }
       }
     };
 

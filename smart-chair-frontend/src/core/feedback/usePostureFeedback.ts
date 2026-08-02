@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useChair } from "../state/ChairContext";
-import { useTimer } from "../../features/sessions/TimerContext";
+import { useChair } from "../state/useChair";
+import { useTimer } from "../../features/sessions/useTimer";
 import type { FeedbackRule } from "../../features/sessions/session";
 
 export type PostureLevel = "ok" | "warn" | "bad";
@@ -16,7 +16,7 @@ function matches(r: FeedbackRule, label: string, msInSameLabel: number) {
 }
 
 export function usePostureFeedback() {
-  const { telemetry } = useChair() as any;
+  const { telemetry } = useChair();
   const { state: timer } = useTimer();
 
   const label: string = telemetry?.posLabel ?? "unknown";

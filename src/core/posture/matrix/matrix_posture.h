@@ -1,7 +1,6 @@
 #pragma once
 #include "core/posture/matrix/matrix_zones.h"
-#include <Arduino.h>
-#include <vector>
+#include <stdint.h>
 
 struct MatrixTags {
   bool occupied = false;

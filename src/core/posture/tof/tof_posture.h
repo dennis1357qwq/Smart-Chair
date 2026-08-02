@@ -1,6 +1,5 @@
 #pragma once
 #include "core/tof_data.h"
-#include <Arduino.h>
 #include <stdint.h>
 
 // -------------------- Enums für Levels --------------------

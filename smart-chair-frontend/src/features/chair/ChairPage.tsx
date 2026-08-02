@@ -1,5 +1,5 @@
 import PosturePanel from "../../ui/PosturePanel";
-import { useTimer } from "../sessions/TimerContext";
+import { useTimer } from "../sessions/useTimer";
 
 export default function ChairPage() {
   const { state: timer } = useTimer();

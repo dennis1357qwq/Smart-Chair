@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTimer } from "../features/sessions/TimerContext";
+import { useTimer } from "../features/sessions/useTimer";
 import PosturePanel from "./PosturePanel";
 
 function formatMMSS(totalSec: number) {

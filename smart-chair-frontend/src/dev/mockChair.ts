@@ -6,33 +6,33 @@ function clamp(n: number, a: number, b: number) {
 }
 
 const labels = [
-  { id: 0, label: "unknown" },
-  { id: 1, label: "neutral" },
+  { id: -1, label: "unknown" },
+  { id: 0, label: "neutral" },
 
-  { id: 2, label: "lean_left_neutral" },
-  { id: 3, label: "lean_left_strong" },
-  { id: 4, label: "lean_right_neutral" },
-  { id: 5, label: "lean_right_strong" },
+  { id: 1, label: "lean_left_neutral" },
+  { id: 2, label: "lean_left_strong" },
+  { id: 3, label: "lean_right_neutral" },
+  { id: 4, label: "lean_right_strong" },
 
-  { id: 6, label: "sit_front" },
+  { id: 5, label: "sit_front" },
 
-  { id: 7, label: "leg_crossed_left" },
-  { id: 8, label: "leg_crossed_right" },
+  { id: 6, label: "leg_crossed_left" },
+  { id: 7, label: "leg_crossed_right" },
 
-  { id: 9, label: "neutral_no_backrest" },
-  { id: 10, label: "lean_back" },
+  { id: 8, label: "neutral_no_backrest" },
+  { id: 9, label: "lean_back" },
 
-  { id: 11, label: "slouch_upper_neutral" },
-  { id: 12, label: "slouch_lower_neutral" },
-  { id: 13, label: "slouch_upper_left" },
-  { id: 14, label: "slouch_lower_left" },
-  { id: 15, label: "slouch_upper_right" },
-  { id: 16, label: "slouch_lower_right" },
+  { id: 10, label: "slouch_upper_neutral" },
+  { id: 11, label: "slouch_lower_neutral" },
+  { id: 12, label: "slouch_upper_left" },
+  { id: 13, label: "slouch_lower_left" },
+  { id: 14, label: "slouch_upper_right" },
+  { id: 15, label: "slouch_lower_right" },
 
-  { id: 17, label: "twist_left" },
-  { id: 18, label: "twist_right" },
+  { id: 16, label: "twist_left" },
+  { id: 17, label: "twist_right" },
 
-  { id: 19, label: "unoccupied" },
+  { id: 18, label: "unoccupied" },
 ];
 
 let i = 0;
@@ -71,9 +71,8 @@ export function mockTelemetry(): Telemetry {
         knee: [-1, -1],
         bottom: [-1, -1],
       },
-      // falls dein Telemetry-Type andere Felder hat, ergänzen
-    } as any,
-  } as Telemetry;
+    },
+  };
 }
 
 export function startMockBaseline(ms: number) {
