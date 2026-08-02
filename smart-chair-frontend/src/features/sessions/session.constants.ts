@@ -1,0 +1,30 @@
+export const ALL_POSTURE_LABELS: string[] = [
+  "neutral",
+  "lean_left_neutral",
+  "lean_left_strong",
+  "lean_right_neutral",
+  "lean_right_strong",
+  "sit_front",
+  "leg_crossed_left",
+  "leg_crossed_right",
+  "neutral_no_backrest",
+  "lean_back",
+  "slouch_upper_neutral",
+  "slouch_lower_neutral",
+  "slouch_upper_left",
+  "slouch_lower_left",
+  "slouch_upper_right",
+  "slouch_lower_right",
+  "twist_left",
+  "twist_right",
+  "unoccupied",
+  "unknown",
+];
+
+export const SESSION_COLOR_PALETTE = [
+  "bg-sky-600",
+  "bg-teal-600",
+  "bg-rose-600",
+  "bg-violet-600",
+  "bg-orange-600",
+];
